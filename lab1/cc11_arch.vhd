@@ -1,8 +1,8 @@
---
+s--
 -- VHDL Architecture elech505_lab1_lib.cc11.arch
 --
 -- Created:
---          by - Labo.UNKNOWN (PC-000)
+--          by - Denis Hoornaert
 --          at - 09:53:36 29/03/2018
 --
 -- using Mentor Graphics HDL Designer(TM) 2013.1b (Build 2)
