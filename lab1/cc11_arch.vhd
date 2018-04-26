@@ -1,4 +1,4 @@
-s--
+--
 -- VHDL Architecture elech505_lab1_lib.cc11.arch
 --
 -- Created:

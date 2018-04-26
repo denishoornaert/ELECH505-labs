@@ -46,7 +46,7 @@ BEGIN
       
     stimuli : process
     variable counter : integer := 0;
-    /* The following answers have been obtained by using python */
+    -- The following answers have been obtained by using python
     variable ans : answers := (("000"), ("001"), ("010"), ("011"), ("100"), ("101"), ("110"), ("111"), ("000"), ("001"), ("010"), ("011"), ("100"), ("101"), ("110"), ("111"), ("000"), ("000"), ("000"), ("000"), ("000"), ("000"), ("000"), ("000"), ("111"), ("111"), ("111"), ("111"), ("111"), ("111"), ("111"), ("111"));
     
     begin

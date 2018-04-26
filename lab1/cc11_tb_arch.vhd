@@ -37,7 +37,7 @@ BEGIN
     
     stimuli : process
     variable counter : integer := 0;
-    /* The following answers have been obtained by using python */
+    -- The following answers have been obtained by using python
     variable ans : answers := ('0', '1', '0', '1', '0', '0', '1', '1');
     
     begin
