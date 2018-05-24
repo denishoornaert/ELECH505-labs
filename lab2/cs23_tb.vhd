@@ -46,17 +46,17 @@ architecture arch of cs23_tb is
     signal tbD_out : std_logic_vector (0 to 3);
     signal tbE : std_logic;
     
-    type inputs is array (0 to 1) of std_logic_vector (0 to 3);
-    type ograys is array (0 to 1) of std_logic_vector (0 to 3);
-    type errors is array (0 to 1) of std_logic;
+    type outputs is array (0 to 15) of std_logic_vector (0 to 3);
+    type grayCodes is array (0 to 15) of std_logic_vector (0 to 3);
+    type errors is array (0 to 15) of std_logic;
     
 begin
     tbcs23 : cs23 port map(D_In=>tbD_in, start=>tbstart, rst=>tbrst, clk=>tbclk, D_out=>tbD_out, E=>tbE);
     
     stimuli : process
-    variable inp : inputs := ("0001", "1010");
-    variable gra : ograys := ("0001", "1111");
-    variable err : errors := ('0', '1');
+    variable output : outputs :=   ("0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1111", "1111", "1111", "1111", "1111", "1111");
+    variable input  : grayCodes := ("0000", "0001", "0011", "0010", "0110", "0111", "0101", "0100", "1100", "1000", "1001", "1010", "1011", "1101", "1110", "1111");
+    variable error  : errors :=    ('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1',  '1');
     
     begin
         tbD_in <= '0';
@@ -64,24 +64,26 @@ begin
         tbclk <= '0';
         wait for tbperiod;
         
-        for i in 0 to 1 loop
+        for i in 0 to 15 loop
             tbrst <= '0';
             tbclk <= not tbclk;
             tbstart <= '1';
-            tbD_in <= inp(i)(0);
+            tbD_in <= input(i)(0);
             wait for tbperiod;
+            
             for j in 1 to 3 loop
                 tbstart <= '0';
                 tbclk <= not tbclk;
                 wait for tbperiod;
-                tbD_in <= inp(i)(j);
+                tbD_in <= input(i)(j);
                 tbclk <= not tbclk;
                 wait for tbperiod;
             end loop;
+            
             tbclk <= not tbclk;
             wait for tbperiod;
-            assert (tbD_out = gra(i)) report "Unexpected output (D_out)";
-            assert (tbE = err(i)) report "Unexpected output (E)";
+            assert (tbD_out = output(i)) report "Unexpected output (D_out)";
+            assert (tbE = error(i)) report "Unexpected output (E)";
         end loop;
     end process;
 

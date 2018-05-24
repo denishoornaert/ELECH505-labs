@@ -27,7 +27,7 @@ use ieee.std_logic_unsigned.all;
 
 entity cs22 is
   port (
-    D_in : IN std_logic;
+    SD_in : IN std_logic;
     rst : IN std_logic;
     clk : IN std_logic; --'signal' in the assignment statement
     D_out : OUT std_logic_vector (0 to 7);
@@ -36,7 +36,7 @@ entity cs22 is
 end cs22;
 
 architecture Behavioral of cs22 is
-    signal cnt : std_logic_vector (0 to 2);
+    signal cnt : std_logic_vector (0 to 2); -- number of bits received and stored in the register
     signal reg : std_logic_vector (0 to 7);
     
 begin
@@ -47,23 +47,17 @@ begin
             cnt <= (others => '0');
         elsif(rising_edge(clk)) then
             cnt <= cnt+'1';
-            case (cnt) is
-                when ("000") => reg(0) <= D_in;
-                when ("001") => reg(1) <= D_in;
-                when ("010") => reg(2) <= D_in;
-                when ("011") => reg(3) <= D_in;
-                when ("100") => reg(4) <= D_in;
-                when ("101") => reg(5) <= D_in;
-                when ("110") => reg(6) <= D_in;
-                when others => reg(7) <= D_in;
-            end case;
+            reg(7) <= SD_in;
+            reg(0 to 6) <= reg(1 to 7);
             if(cnt = "111") then
                 valid <= '1';
+                D_out(7) <= SD_in;
+                D_out(0 to 6) <= reg(1 to 7);
             else
                 valid <= '0';
+                D_out <= (others => '0');
             end if;
         end if;
-        D_out <= reg;
     end process;
 
 end Behavioral;

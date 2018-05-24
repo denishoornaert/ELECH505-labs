@@ -15,9 +15,11 @@ use ieee.std_logic_unsigned.all;
 ENTITY cs21 IS
   port(
     PD_in : IN std_logic_vector (0 to 7);
+    P_in : IN std_logic;
+    SD_in : IN std_logic;
     rst : IN std_logic;
     clk : IN std_logic;
-    result : OUT std_logic_vector (0 to 7)
+    result : OUT std_logic
   );
 END ENTITY cs21;
 
@@ -31,11 +33,16 @@ BEGIN
   begin
     if (rst = '1') then
       reg <= (others => '0');
+      result <= '0';
     elsif (rising_edge(clk)) then
-      reg <= PD_in;
+      if(P_in = '1') then
+        reg <= PD_in;
+      else
+        reg(7) <= SD_in;
+        reg(0 to 6) <= reg(1 to 7);
+      end if;
+      result <= reg(0);
     end if;
-    result(7) <= '0';
-    result(0 to 6) <= reg(1 to 7);
   end process;
 
 END ARCHITECTURE arch;

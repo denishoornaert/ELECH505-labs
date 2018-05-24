@@ -36,21 +36,28 @@ entity cs23 is
 end cs23;
 
 architecture arch of cs23 is
-    signal isRecieving : std_logic;
-    signal inputBuffer : std_logic_vector (0 to 3);
-    signal inputBufferCnt : std_logic_vector (0 to 1);
-    signal outputBuffer : std_logic_vector (0 to 3);
-
+    signal cnt : std_logic_vector (0 to 1);
+    signal reg : std_logic_vector (0 to 3);
+    
 begin
+    
     process (rst, clk)
     begin
         if(rst = '1') then
-            isRecieving <= '0';
-            inputBuffer <= (others => '0');
-            inputBufferCnt <= (others => '0');
+            -- pass
         elsif(rising_edge(clk)) then
-            if(inputBufferCnt = "11") then
-                case (inputBuffer) is
+        
+            if(start = '1') then
+                cnt <= "01";
+                reg(0) <= D_in; -- 3 is the lsb offset
+            else
+                cnt <= cnt+'1';
+                reg(0) <= D_in;
+                reg(1 to 3) <= reg(0 to 2);
+            end if;
+            
+            if(cnt = "11") then
+                case (reg(2 to 2)&reg(1 to 1)&reg(0 to 0)&D_in) is
                     when("0000") => D_out <= "0000";
                     when("0001") => D_out <= "0001";
                     when("0011") => D_out <= "0010";
@@ -63,7 +70,7 @@ begin
                     when("1000") => D_out <= "1001";
                     when others => D_out <= "1111";
                 end case;
-                case (inputBuffer) is
+                case (reg(2 to 2)&reg(1 to 1)&reg(0 to 0)&D_in) is
                     when("0000") => E <= '0';
                     when("0001") => E <= '0';
                     when("0011") => E <= '0';
@@ -71,28 +78,14 @@ begin
                     when("0110") => E <= '0';
                     when("0111") => E <= '0';
                     when("0101") => E <= '0';
-                    when("0100") => E <= '0';
+                    when("0100") => E <= '0'; 
                     when("1100") => E <= '0';
                     when("1000") => E <= '0';
                     when others => E <= '1';
                 end case;
-            elsif(start = '1' and inputBufferCnt = "00") then
-                isRecieving <= '1';
-                inputBufferCnt <= inputBufferCnt+'1';
-                inputBuffer(0) <= D_in;
-            else
-                case (inputBufferCnt) is
-                    when ("01") => inputBuffer(1) <= D_in;
-                    when ("10") => inputBuffer(2) <= D_in;
-                    when others => inputBuffer(3) <= D_in;
-                end case;
-                inputBufferCnt <= inputBufferCnt+'1';
-                if(inputBufferCnt = "11") then
-                    isRecieving <= '0';
-                end if;                
             end if;
         end if;
-        --D_out <= outputBuffer;
     end process;
 
 end arch;
+
